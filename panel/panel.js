@@ -106,24 +106,40 @@ if (!isPanel) {
 
   // Live inspection UI updates from content script
   const elFontSize = document.getElementById("live-font-size");
+  const elFontRem = document.getElementById("live-font-rem");
+  const elFontWeight = document.getElementById("live-font-weight");
   const elTextSw = document.getElementById("live-text-swatch");
   const elTextRGBA = document.getElementById("live-text-rgba");
   const elTextHEX = document.getElementById("live-text-hex");
+  const elBgSw = document.getElementById("live-bg-swatch");
+  const elBgRGBA = document.getElementById("live-bg-rgba");
+  const elBgHEX = document.getElementById("live-bg-hex");
 
   function resetLive() {
     if (!elFontSize) return; // live UI not present
     elFontSize.textContent = "—";
+    elFontRem.textContent = "—";
+    elFontWeight.textContent = "—";
     elTextSw && (elTextSw.style.background = "transparent");
     elTextRGBA && (elTextRGBA.textContent = "—");
     elTextHEX && (elTextHEX.textContent = "—");
+    elBgSw && (elBgSw.style.background = "transparent");
+    elBgRGBA && (elBgRGBA.textContent = "—");
+    elBgHEX && (elBgHEX.textContent = "—");
   }
 
   function applyLive(data) {
     if (!data) return;
     if (elFontSize && data.fontSize) elFontSize.textContent = data.fontSize;
+    if (elFontRem && data.fontRem) elFontRem.textContent = `(${data.fontRem})`;
+    if (elFontWeight && data.fontWeight)
+      elFontWeight.textContent = data.fontWeight;
     if (elTextSw && data.textColor) elTextSw.style.background = data.textColor;
     if (elTextRGBA && data.textColor) elTextRGBA.textContent = data.textColor;
     if (elTextHEX && data.textHex) elTextHEX.textContent = data.textHex;
+    if (elBgSw && data.bgColor) elBgSw.style.background = data.bgColor;
+    if (elBgRGBA && data.bgColor) elBgRGBA.textContent = data.bgColor;
+    if (elBgHEX && data.bgHex) elBgHEX.textContent = data.bgHex;
   }
 
   chrome.runtime.onMessage.addListener((msg) => {

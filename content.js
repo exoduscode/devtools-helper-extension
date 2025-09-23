@@ -16,6 +16,7 @@ let inspectionState = {
   isActive: false,
   tooltip: null,
   colorBlockText: null,
+  colorBlockBg: null,
   infoText: null,
 };
 
@@ -40,7 +41,13 @@ function createTooltip() {
   colorBlockText.style.width = "100%";
   colorBlockText.style.borderRadius = "3px";
 
+  const colorBlockBg = document.createElement("div");
+  colorBlockBg.style.height = "16px";
+  colorBlockBg.style.width = "100%";
+  colorBlockBg.style.borderRadius = "3px";
+
   tooltip.appendChild(colorBlockText);
+  tooltip.appendChild(colorBlockBg);
 
   const infoText = document.createElement("div");
   tooltip.appendChild(infoText);
@@ -50,7 +57,18 @@ function createTooltip() {
   // Store elements in state
   inspectionState.tooltip = tooltip;
   inspectionState.colorBlockText = colorBlockText;
+  inspectionState.colorBlockBg = colorBlockBg;
   inspectionState.infoText = infoText;
+}
+
+function getVisibleBackground(el) {
+  let current = el;
+  while (current && current !== document.documentElement) {
+    const bg = getComputedStyle(current).backgroundColor;
+    if (bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent") return bg;
+    current = current.parentElement;
+  }
+  return getComputedStyle(document.body).backgroundColor || "rgb(255,255,255)";
 }
 
 // --- Event Handlers ---
@@ -65,16 +83,29 @@ function onMouseMove(e) {
 
   const style = getComputedStyle(el);
   const textColor = style.color;
+  const bgColor = getVisibleBackground(el);
+  const rootFontSize = parseFloat(
+    getComputedStyle(document.documentElement).fontSize
+  );
+  const remSize =
+    (parseFloat(style.fontSize) / rootFontSize).toFixed(2) + "rem";
 
   inspectionState.colorBlockText.style.backgroundColor = textColor;
+  inspectionState.colorBlockBg.style.backgroundColor = bgColor;
   inspectionState.infoText.textContent =
-    `Fonte: ${style.fontSize}\n` +
-    `Texto: ${textColor} | ${rgbToHex(textColor)}`;
+    `Fonte: ${style.fontSize} (${remSize})\n` +
+    `Peso: ${style.fontWeight}\n` +
+    `Texto: ${textColor} | ${rgbToHex(textColor)}\n` +
+    `Background: ${bgColor} | ${rgbToHex(bgColor)}`;
 
   lastSample = {
     fontSize: style.fontSize,
+    fontRem: remSize,
+    fontWeight: style.fontWeight,
     textColor,
     textHex: rgbToHex(textColor),
+    bgColor,
+    bgHex: rgbToHex(bgColor),
   };
 
   const now = Date.now();
