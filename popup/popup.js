@@ -19,9 +19,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const baseText = translator.getMessage("detectCSSTitle");
     const onLabel = translator.getMessage("labelOn");
     const offLabel = translator.getMessage("labelOff");
-    const isDetecting = pickFontBtn.classList.contains('active');
+    const isDetecting = pickFontBtn.classList.contains("active");
 
-    const icon = '🔤'; // Keep the icon consistent
+    const icon = "🔤"; // Keep the icon consistent
     if (isDetecting) {
       pickFontBtn.innerHTML = `${icon} ${baseText} <span style="color: #a5d6a7;">${onLabel}</span>`;
     } else {
@@ -30,10 +30,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   const setInitialState = async () => {
-    const { userLang = 'en', isDetecting, userTheme = 'system' } = await chrome.storage.local.get(["userLang", "isDetecting", "userTheme"]);
+    const {
+      userLang = "en",
+      isDetecting,
+      userTheme = "system",
+    } = await chrome.storage.local.get([
+      "userLang",
+      "isDetecting",
+      "userTheme",
+    ]);
     langSelect.value = userLang;
     themeSelect.value = userTheme;
-    
+
     await translator.load(userLang);
     translator.apply();
 
@@ -57,17 +65,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- Event Listeners for Buttons ---
 
-  document.getElementById("btn-clear-session").addEventListener("click", async () => {
-    const tabId = await getActiveTabId();
-    if (tabId) chrome.scripting.executeScript({ target: { tabId }, func: () => sessionStorage.clear() });
-    window.close();
-  });
+  document
+    .getElementById("btn-clear-session")
+    .addEventListener("click", async () => {
+      const tabId = await getActiveTabId();
+      if (tabId)
+        chrome.scripting.executeScript({
+          target: { tabId },
+          func: () => sessionStorage.clear(),
+        });
+      window.close();
+    });
 
-  document.getElementById("btn-clear-local").addEventListener("click", async () => {
-    const tabId = await getActiveTabId();
-    if (tabId) chrome.scripting.executeScript({ target: { tabId }, func: () => localStorage.clear() });
-    window.close();
-  });
+  document
+    .getElementById("btn-clear-local")
+    .addEventListener("click", async () => {
+      const tabId = await getActiveTabId();
+      if (tabId)
+        chrome.scripting.executeScript({
+          target: { tabId },
+          func: () => localStorage.clear(),
+        });
+      window.close();
+    });
 
   document.getElementById("btn-clear-cookies").addEventListener("click", () => {
     chrome.browsingData.remove({ since: 0 }, { cookies: true });
@@ -78,72 +98,106 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tabId = await getActiveTabId();
     const { isDetecting } = await chrome.storage.local.get("isDetecting");
     const newIsDetecting = !isDetecting;
-    
+
     await chrome.storage.local.set({ isDetecting: newIsDetecting });
     if (tabId) {
-        chrome.tabs.sendMessage(tabId, {
-            action: "toggle-css-detect",
-            isDetecting: newIsDetecting,
-        });
+      chrome.tabs.sendMessage(tabId, {
+        action: "toggle-css-detect",
+        isDetecting: newIsDetecting,
+      });
     }
-    pickFontBtn.classList.toggle('active');
+    pickFontBtn.classList.toggle("active");
     updateButtonText();
     setTimeout(() => window.close(), 100);
   });
 
-  // --- Color Finder --- 
-  const findColorsBtn = document.getElementById('btn-find-colors');
-  const colorResultsDiv = document.getElementById('color-results');
+  // --- Toast / Status ---
+  const showStatus = (messageKey) => {
+    const toast = document.getElementById("status-toast");
+    if (!toast) return;
 
-  findColorsBtn.addEventListener('click', async () => {
+    toast.textContent = translator.getMessage(messageKey);
+    toast.classList.add("show");
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 5000);
+  };
+
+  // --- Clipboard Helper ---
+  const copyToClipboard = (text, statusMessageKey) => {
+    const ta = document.createElement("textarea");
+    ta.style.position = "absolute";
+    ta.style.left = "-9999px";
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+      showStatus(statusMessageKey);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+    document.body.removeChild(ta);
+  };
+
+  // --- Color Finder ---
+  const findColorsBtn = document.getElementById("btn-find-colors");
+  const colorResultsDiv = document.getElementById("color-results");
+
+  findColorsBtn.addEventListener("click", async () => {
     const tabId = await getActiveTabId();
     if (tabId) {
-        findColorsBtn.disabled = true;
-        findColorsBtn.textContent = 'Finding...';
-        chrome.tabs.sendMessage(tabId, { action: 'find-colors' });
+      findColorsBtn.disabled = true;
+      findColorsBtn.textContent = "Finding...";
+      chrome.tabs.sendMessage(tabId, { action: "find-colors" });
     }
   });
 
   chrome.runtime.onMessage.addListener((msg) => {
-    if (msg.action === 'color-results') {
-        findColorsBtn.disabled = false;
-        findColorsBtn.innerHTML = `<span data-i18n="findColorsButton"></span>`;
-        translator.apply(); // Re-apply to translate the button text
+    if (msg.action === "color-results") {
+      findColorsBtn.disabled = false;
+      findColorsBtn.innerHTML = `<span data-i18n="findColorsButton"></span>`;
+      translator.apply(); // Re-apply to translate the button text
 
-        colorResultsDiv.innerHTML = ''; // Clear previous results
-        msg.colors.forEach(colorString => {
-            const color = new Color(colorString);
-            const rgb = color.toRgb();
-            const hex = color.toHex();
+      colorResultsDiv.innerHTML = ""; // Clear previous results
+      msg.colors.forEach((colorString) => {
+        const color = new Color(colorString);
+        const rgb = color.toRgb();
+        const hex = color.toHex();
 
-            const item = document.createElement('div');
-            item.className = 'color-item';
+        const item = document.createElement("div");
+        item.className = "color-item";
 
-            const swatch = document.createElement('div');
-            swatch.className = 'color-swatch';
-            swatch.style.backgroundColor = rgb;
+        const swatch = document.createElement("div");
+        swatch.className = "color-swatch";
+        swatch.style.backgroundColor = rgb;
 
-            const details = document.createElement('div');
-            details.className = 'color-details';
+        const details = document.createElement("div");
+        details.className = "color-details";
 
-            const rgbValue = document.createElement('div');
-            rgbValue.className = 'color-value';
-            rgbValue.textContent = rgb;
-            rgbValue.title = 'Copy RGB';
-            rgbValue.addEventListener('click', () => navigator.clipboard.writeText(rgb));
+        const rgbValue = document.createElement("div");
+        rgbValue.className = "color-value";
+        rgbValue.textContent = rgb;
+        rgbValue.title = translator.getMessage("copyTooltip");
+        rgbValue.addEventListener("click", () =>
+          copyToClipboard(rgb, "statusColorCopied")
+        );
 
-            const hexValue = document.createElement('div');
-            hexValue.className = 'color-value';
-            hexValue.textContent = hex;
-            hexValue.title = 'Copy HEX';
-            hexValue.addEventListener('click', () => navigator.clipboard.writeText(hex));
+        const hexValue = document.createElement("div");
+        hexValue.className = "color-value";
+        hexValue.textContent = hex;
+        hexValue.title = translator.getMessage("copyTooltip");
+        hexValue.addEventListener("click", () =>
+          copyToClipboard(hex, "statusColorCopied")
+        );
 
-            details.appendChild(rgbValue);
-            details.appendChild(hexValue);
-            item.appendChild(swatch);
-            item.appendChild(details);
-            colorResultsDiv.appendChild(item);
-        });
+        details.appendChild(rgbValue);
+        details.appendChild(hexValue);
+        item.appendChild(swatch);
+        item.appendChild(details);
+        colorResultsDiv.appendChild(item);
+      });
     }
   });
 

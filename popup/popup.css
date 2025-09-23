@@ -161,6 +161,27 @@ button:active {
 }
 
 /* Tooltip via title já funciona nativamente, mas podemos reforçar visual com pseudo-elementos */
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: -50px; /* Start off-screen */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    z-index: 1001;
+    transition: bottom 0.5s ease;
+    opacity: 0;
+}
+
+.toast.show {
+    bottom: 20px;
+    opacity: 1;
+}
+
 button[title]:hover::after, .color-value[title]:hover::after {
   content: attr(title);
   position: absolute;

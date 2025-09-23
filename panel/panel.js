@@ -32,11 +32,16 @@ if (!isPanel) {
     };
 
     const showStatus = (messageKey, type = "success", isKey = true) => {
-        const statusEl = document.getElementById("status");
-        if (!statusEl) return;
-        statusEl.textContent = isKey ? translator.getMessage(messageKey) : messageKey;
-        statusEl.style.color = type === "error" ? "#d32f2f" : "#2e7d32";
-        setTimeout(() => { statusEl.textContent = ""; }, 3000);
+        const toast = document.getElementById('status-toast');
+        if (!toast) return;
+
+        toast.textContent = isKey ? translator.getMessage(messageKey) : messageKey;
+        toast.className = 'toast show'; // Reset classes
+        toast.classList.add(type); // Add success or error class
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
     };
 
     // --- Initialization ---

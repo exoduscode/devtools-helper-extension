@@ -195,6 +195,34 @@
             border-radius: 3px;
             transition: background-color 0.2s;
         }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: -50px; /* Start off-screen */
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            z-index: 1001;
+            transition: bottom 0.5s ease, opacity 0.5s ease;
+            opacity: 0;
+            color: #fff;
+        }
+
+        .toast.show {
+            bottom: 20px;
+            opacity: 1;
+        }
+
+        .toast.success {
+            background-color: #2e7d32; /* Dark green */
+        }
+
+        .toast.error {
+            background-color: #d32f2f; /* Dark red */
+        }
     </style>
 </head>
 
@@ -278,8 +306,8 @@
             <div id="color-results" class="color-grid"></div>
         </div>
 
-        <div class="status" id="status"></div>
     </div>
+    <div id="status-toast" class="toast"></div>
 
     <script src="panel.js"></script>
 </body>
