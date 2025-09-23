@@ -85,5 +85,17 @@
   },
   "clear": {
     "message": "Clear"
+  },
+  "theme": {
+    "message": "Theme"
+  },
+  "themeSystem": {
+    "message": "System"
+  },
+  "themeLight": {
+    "message": "Light"
+  },
+  "themeDark": {
+    "message": "Dark"
   }
 }

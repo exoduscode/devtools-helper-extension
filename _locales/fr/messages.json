@@ -85,5 +85,17 @@
   },
   "clear": {
     "message": "Effacer"
+  },
+  "theme": {
+    "message": "Thème"
+  },
+  "themeSystem": {
+    "message": "Système"
+  },
+  "themeLight": {
+    "message": "Clair"
+  },
+  "themeDark": {
+    "message": "Sombre"
   }
 }

@@ -85,5 +85,17 @@
   },
   "clear": {
     "message": "清除"
+  },
+  "theme": {
+    "message": "主题"
+  },
+  "themeSystem": {
+    "message": "系统"
+  },
+  "themeLight": {
+    "message": "浅色"
+  },
+  "themeDark": {
+    "message": "深色"
   }
 }

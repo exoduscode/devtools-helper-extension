@@ -1,10 +1,32 @@
 /* Container principal */
+:root {
+  --bg-color: #f5f5f5;
+  --text-color: #212121;
+  --section-bg: #ffffff;
+  --border-color: #e0e0e0;
+  --button-bg: #f0f0f0;
+  --button-hover-bg: #e0e0e0;
+  --button-active-bg: #c8e6c9; /* Light green */
+  --select-arrow: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23333" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
+}
+
+[data-theme='dark'] {
+  --bg-color: #212121;
+  --text-color: #f5f5f5;
+  --section-bg: #333333;
+  --border-color: #424242;
+  --button-bg: #424242;
+  --button-hover-bg: #535353;
+  --button-active-bg: #2e7d32; /* Darker green */
+  --select-arrow: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23eee" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
+}
+
 .popup-container {
   width: 320px;
   padding: 15px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #1e1e1e;
-  color: #fff;
+  background: var(--bg-color);
+  color: var(--text-color);
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
@@ -20,7 +42,28 @@
   font-size: 14px;
   margin-top: 15px;
   margin-bottom: 6px;
-  color: #9cdcfe;
+  color: var(--text-color);
+}
+
+/* Settings Bar */
+.settings-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 15px;
+}
+
+.setting-item {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.setting-item label {
+    font-size: 0.8em;
+    margin-bottom: 4px;
+    color: var(--text-color);
 }
 
 /* Seções */
@@ -29,17 +72,21 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  background: var(--section-bg);
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  border-radius: 5px;
 }
 
 /* Botões */
-button {
+button, select {
   display: flex;
   align-items: center;
   gap: 6px;
   justify-content: flex-start;
-  background-color: #007acc;
-  color: #fff;
-  border: none;
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
   padding: 8px 10px;
   border-radius: 6px;
   cursor: pointer;
@@ -48,12 +95,22 @@ button {
   position: relative;
 }
 
-button.active {
-  background-color: #2e7d32; /* Green to indicate ON */
+select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 30px; /* Make space for arrow */
+  background-image: var(--select-arrow);
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  width: 100%;
 }
 
-button:hover {
-  background: #005aa3;
+button.active {
+  background-color: var(--button-active-bg);
+}
+
+button:hover, select:hover {
+  background: var(--button-hover-bg);
 }
 
 button.active:hover {
@@ -61,7 +118,7 @@ button.active:hover {
 }
 
 button:active {
-  background: #004080;
+  background: var(--button-hover-bg);
 }
 
 /* Tooltip via title já funciona nativamente, mas podemos reforçar visual com pseudo-elementos */

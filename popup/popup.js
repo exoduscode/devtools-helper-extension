@@ -13,6 +13,7 @@ async function getActiveTabId() {
 document.addEventListener("DOMContentLoaded", async () => {
   const pickFontBtn = document.getElementById("btn-pick-font");
   const langSelect = document.getElementById("lang-select");
+  const themeSelect = document.getElementById("theme-select");
 
   const updateButtonText = () => {
     const baseText = translator.getMessage("detectCSSTitle");
@@ -29,8 +30,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   const setInitialState = async () => {
-    const { userLang = 'en', isDetecting } = await chrome.storage.local.get(["userLang", "isDetecting"]);
+    const { userLang = 'en', isDetecting, userTheme = 'system' } = await chrome.storage.local.get(["userLang", "isDetecting", "userTheme"]);
     langSelect.value = userLang;
+    themeSelect.value = userTheme;
     
     await translator.load(userLang);
     translator.apply();
@@ -46,6 +48,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     await translator.load(selectedLang);
     translator.apply();
     updateButtonText();
+  });
+
+  themeSelect.addEventListener("change", async () => {
+    const selectedTheme = themeSelect.value;
+    await themeManager.setTheme(selectedTheme);
   });
 
   // --- Event Listeners for Buttons ---

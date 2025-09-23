@@ -14,6 +14,7 @@ if (!isPanel) {
   document.addEventListener("DOMContentLoaded", async () => {
     const pickFontBtn = document.getElementById("btn-pick-font");
     const langSelect = document.getElementById("lang-select");
+    const themeSelect = document.getElementById("theme-select");
 
     // --- UI Update Functions ---
     const updateButtonText = () => {
@@ -40,8 +41,9 @@ if (!isPanel) {
 
     // --- Initialization ---
     const setInitialState = async () => {
-      const { userLang = 'en', isDetecting } = await chrome.storage.local.get(["userLang", "isDetecting"]);
+      const { userLang = 'en', isDetecting, userTheme = 'system' } = await chrome.storage.local.get(["userLang", "isDetecting", "userTheme"]);
       langSelect.value = userLang;
+      themeSelect.value = userTheme;
       
       await translator.load(userLang);
       translator.apply();
@@ -59,6 +61,11 @@ if (!isPanel) {
       await chrome.storage.local.set({ userLang: selectedLang });
       // Must reload the panel for all i18n changes to apply in devtools
       window.location.reload();
+    });
+
+    themeSelect.addEventListener("change", async () => {
+        const selectedTheme = themeSelect.value;
+        await themeManager.setTheme(selectedTheme);
     });
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
