@@ -43,18 +43,25 @@ button {
   padding: 8px 10px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
   transition: background 0.2s;
   position: relative;
 }
 
-/* Hover / Active */
+button.active {
+  background-color: #2e7d32; /* Green to indicate ON */
+}
+
 button:hover {
-  background-color: #005f99;
+  background: #005aa3;
+}
+
+button.active:hover {
+  background-color: #1b5e20;
 }
 
 button:active {
-  background-color: #004466;
+  background: #004080;
 }
 
 /* Tooltip via title já funciona nativamente, mas podemos reforçar visual com pseudo-elementos */

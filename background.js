@@ -1,3 +1,7 @@
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.storage.local.set({ isDetecting: false });
+});
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "clear-cookies") {
     chrome.browsingData.remove({ since: 0 }, { cookies: true }, () => {

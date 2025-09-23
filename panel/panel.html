@@ -36,8 +36,17 @@
             font-size: 14px;
         }
 
+        button.active {
+            background-color: #2e7d32;
+            /* Green to indicate ON */
+        }
+
         button:hover {
             background: #005aa3;
+        }
+
+        button.active:hover {
+            background-color: #1b5e20;
         }
 
         button:active {
@@ -97,8 +106,8 @@
 
         <div class="section">
             <h3>Inspeção Visual</h3>
-            <button id="btn-pick-font" title="Detecta tamanho e cor do texto sob o mouse">🔤 Detectar Fonte</button>
-            <button id="btn-pick-bg" title="Detecta a cor de fundo sob o mouse">🎨 Detectar Background</button>
+            <button id="btn-pick-font" title="Detecta o CSS em tempo real do elemento sob o mouse">🔤 Detectar CSS em
+                Tempo Real</button>
             <div id="inspect-live" class="inspect-live">
                 <div class="row">
                     <div class="label">Fonte:</div>
@@ -110,14 +119,6 @@
                     <div class="values">
                         <span id="live-text-rgba">—</span>
                         <span id="live-text-hex">—</span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="label">Background:</div>
-                    <div id="live-bg-swatch" class="swatch"></div>
-                    <div class="values">
-                        <span id="live-bg-rgba">—</span>
-                        <span id="live-bg-hex">—</span>
                     </div>
                 </div>
             </div>

@@ -58,38 +58,50 @@ if (!isPanel) {
     });
   });
 
-  // Detect Font
-  document.getElementById("btn-pick-font").addEventListener("click", () => {
-    chrome.tabs.sendMessage(
-      chrome.devtools.inspectedWindow.tabId,
-      { action: "pick-font" },
-      () => {
-        if (chrome.runtime.lastError) {
-          showStatus("Erro ao ativar detecção de fonte", "error");
-        } else {
-          showStatus(
-            "Modo de detecção de fonte ativado. Mova o mouse sobre o texto e clique."
-          );
-        }
-      }
-    );
+  // CSS Detection Toggle
+  const pickFontBtn = document.getElementById("btn-pick-font");
+  const originalBtnText = "🔤 Detectar CSS em Tempo Real";
+
+  const updateButtonState = (isDetecting) => {
+    if (isDetecting) {
+      pickFontBtn.classList.add("active");
+      pickFontBtn.innerHTML = `${originalBtnText} <span style="color: #a5d6a7;">(ON)</span>`;
+    } else {
+      pickFontBtn.classList.remove("active");
+      pickFontBtn.innerHTML = `${originalBtnText} <span style="color: #ef9a9a;">(OFF)</span>`;
+    }
+  };
+
+  // Set initial state and listen for changes
+  chrome.storage.local.get("isDetecting", ({ isDetecting }) => {
+    updateButtonState(isDetecting);
   });
 
-  // Detect Background
-  document.getElementById("btn-pick-bg").addEventListener("click", () => {
-    chrome.tabs.sendMessage(
-      chrome.devtools.inspectedWindow.tabId,
-      { action: "pick-bg" },
-      () => {
-        if (chrome.runtime.lastError) {
-          showStatus("Erro ao ativar detecção de background", "error");
-        } else {
-          showStatus(
-            "Modo de detecção de background ativado. Mova o mouse sobre o elemento e clique."
-          );
-        }
-      }
-    );
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === "local" && changes.isDetecting) {
+      updateButtonState(changes.isDetecting.newValue);
+    }
+  });
+
+  pickFontBtn.addEventListener("click", () => {
+    chrome.storage.local.get("isDetecting", ({ isDetecting }) => {
+      const newIsDetecting = !isDetecting;
+      chrome.storage.local.set({ isDetecting: newIsDetecting }, () => {
+        chrome.tabs.sendMessage(
+          chrome.devtools.inspectedWindow.tabId,
+          { action: "toggle-css-detect", isDetecting: newIsDetecting },
+          () => {
+            if (chrome.runtime.lastError) {
+              // showStatus("Erro ao comunicar com a página", "error");
+            } else {
+              showStatus(
+                `Detecção de CSS ${newIsDetecting ? "ativada" : "desativada"}.`
+              );
+            }
+          }
+        );
+      });
+    });
   });
 
   // Live inspection UI updates from content script
@@ -97,9 +109,6 @@ if (!isPanel) {
   const elTextSw = document.getElementById("live-text-swatch");
   const elTextRGBA = document.getElementById("live-text-rgba");
   const elTextHEX = document.getElementById("live-text-hex");
-  const elBgSw = document.getElementById("live-bg-swatch");
-  const elBgRGBA = document.getElementById("live-bg-rgba");
-  const elBgHEX = document.getElementById("live-bg-hex");
 
   function resetLive() {
     if (!elFontSize) return; // live UI not present
@@ -107,9 +116,6 @@ if (!isPanel) {
     elTextSw && (elTextSw.style.background = "transparent");
     elTextRGBA && (elTextRGBA.textContent = "—");
     elTextHEX && (elTextHEX.textContent = "—");
-    elBgSw && (elBgSw.style.background = "transparent");
-    elBgRGBA && (elBgRGBA.textContent = "—");
-    elBgHEX && (elBgHEX.textContent = "—");
   }
 
   function applyLive(data) {
@@ -118,9 +124,6 @@ if (!isPanel) {
     if (elTextSw && data.textColor) elTextSw.style.background = data.textColor;
     if (elTextRGBA && data.textColor) elTextRGBA.textContent = data.textColor;
     if (elTextHEX && data.textHex) elTextHEX.textContent = data.textHex;
-    if (elBgSw && data.bgColor) elBgSw.style.background = data.bgColor;
-    if (elBgRGBA && data.bgColor) elBgRGBA.textContent = data.bgColor;
-    if (elBgHEX && data.bgHex) elBgHEX.textContent = data.bgHex;
   }
 
   chrome.runtime.onMessage.addListener((msg) => {

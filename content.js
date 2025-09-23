@@ -11,15 +11,13 @@ function rgbToHex(rgb) {
     .padStart(2, "0")}`;
 }
 
-function getVisibleBackground(el) {
-  let current = el;
-  while (current && current !== document.documentElement) {
-    const bg = getComputedStyle(current).backgroundColor;
-    if (bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent") return bg;
-    current = current.parentElement;
-  }
-  return getComputedStyle(document.body).backgroundColor || "rgb(255,255,255)";
-}
+// --- State and UI Management ---
+let inspectionState = {
+  isActive: false,
+  tooltip: null,
+  colorBlockText: null,
+  infoText: null,
+};
 
 function createTooltip() {
   const tooltip = document.createElement("div");
@@ -42,119 +40,87 @@ function createTooltip() {
   colorBlockText.style.width = "100%";
   colorBlockText.style.borderRadius = "3px";
 
-  const colorBlockBg = document.createElement("div");
-  colorBlockBg.style.height = "16px";
-  colorBlockBg.style.width = "100%";
-  colorBlockBg.style.borderRadius = "3px";
-
   tooltip.appendChild(colorBlockText);
-  tooltip.appendChild(colorBlockBg);
 
   const infoText = document.createElement("div");
   tooltip.appendChild(infoText);
 
   document.body.appendChild(tooltip);
-  return { tooltip, colorBlockText, colorBlockBg, infoText };
+
+  // Store elements in state
+  inspectionState.tooltip = tooltip;
+  inspectionState.colorBlockText = colorBlockText;
+  inspectionState.infoText = infoText;
 }
 
-function startTooltipInspect(mode) {
-  const { tooltip, colorBlockText, colorBlockBg, infoText } = createTooltip();
+// --- Event Handlers ---
+let lastSample = null;
+let clickTimeout = null;
+const minInterval = 100; // ms for throttling
+let lastSent = 0;
 
-  // Throttle live updates to the panel to avoid spamming messages
-  const minInterval = 100; // ms
-  let lastSent = 0;
-  let lastSample = null;
-  let clickTimeout = null;
+function onMouseMove(e) {
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  if (!el || !inspectionState.tooltip) return;
 
-  function onMouseMove(e) {
-    const el = document.elementFromPoint(e.clientX, e.clientY);
-    if (!el) return;
+  const style = getComputedStyle(el);
+  const textColor = style.color;
 
-    const style = getComputedStyle(el);
-    const textColor = style.color;
-    const bgColor = getVisibleBackground(el);
+  inspectionState.colorBlockText.style.backgroundColor = textColor;
+  inspectionState.infoText.textContent =
+    `Fonte: ${style.fontSize}\n` +
+    `Texto: ${textColor} | ${rgbToHex(textColor)}`;
 
-    colorBlockText.style.backgroundColor = textColor;
-    colorBlockBg.style.backgroundColor = bgColor;
+  lastSample = {
+    fontSize: style.fontSize,
+    textColor,
+    textHex: rgbToHex(textColor),
+  };
 
-    if (mode === "font") {
-      infoText.textContent =
-        `Fonte: ${style.fontSize}\n` +
-        `Texto: ${textColor} | ${rgbToHex(textColor)}\n` +
-        `Background: ${bgColor} | ${rgbToHex(bgColor)}`;
-    } else if (mode === "bg") {
-      infoText.textContent =
-        `Background: ${bgColor}\n` +
-        `RGB/RGBA: ${bgColor}\nHEX: ${rgbToHex(bgColor)}`;
-    }
-
-    // Track last sample
-    lastSample = {
-      fontSize: style.fontSize,
-      textColor,
-      textHex: rgbToHex(textColor),
-      bgColor,
-      bgHex: rgbToHex(bgColor),
-    };
-
-    // Send live update to the panel (throttled)
-    const now = Date.now();
-    if (now - lastSent >= minInterval) {
-      lastSent = now;
-      try {
-        chrome.runtime.sendMessage({ action: "inspect-update", ...lastSample });
-      } catch (_) {
-        // ignore if panel not available
-      }
-    }
-
-    tooltip.style.top = e.clientY + 20 + "px";
-    tooltip.style.left = e.clientX + 20 + "px";
-  }
-
-  function stopInspect(reason = "end") {
-    document.removeEventListener("mousemove", onMouseMove, true);
-    document.removeEventListener("keydown", onKeyDown, true);
-    document.removeEventListener("click", onClick, true);
-    document.removeEventListener("dblclick", onDblClick, true);
-    tooltip.remove();
-
+  const now = Date.now();
+  if (now - lastSent >= minInterval) {
+    lastSent = now;
     try {
-      if (reason === "freeze" && lastSample) {
-        chrome.runtime.sendMessage({ action: "inspect-freeze", ...lastSample });
-      } else {
-        chrome.runtime.sendMessage({ action: "inspect-end" });
-      }
-    } catch (_) {
-      // ignore
-    }
+      chrome.runtime.sendMessage({ action: "inspect-update", ...lastSample });
+    } catch (_) {}
   }
 
-  function onKeyDown(e) {
-    if (e.key === "Escape") stopInspect();
-  }
+  inspectionState.tooltip.style.top = e.clientY + 20 + "px";
+  inspectionState.tooltip.style.left = e.clientX + 20 + "px";
+}
 
-  function onClick(e) {
-    if (e.button !== 0) return; // only left button
-    e.preventDefault();
-    e.stopPropagation();
-    // Defer to see if a double click occurs
-    if (clickTimeout) clearTimeout(clickTimeout);
-    clickTimeout = setTimeout(() => {
-      stopInspect("freeze");
-    }, 250);
-  }
+function onKeyDown(e) {
+  if (e.key === "Escape") stopInspection();
+}
 
-  function onDblClick(e) {
-    if (e.button !== 0) return;
-    e.preventDefault();
-    e.stopPropagation();
-    if (clickTimeout) {
-      clearTimeout(clickTimeout);
-      clickTimeout = null;
-    }
-    stopInspect("end");
+function onClick(e) {
+  if (e.button !== 0) return;
+  e.preventDefault();
+  e.stopPropagation();
+  if (clickTimeout) clearTimeout(clickTimeout);
+  clickTimeout = setTimeout(() => {
+    stopInspection("freeze");
+  }, 250);
+}
+
+function onDblClick(e) {
+  if (e.button !== 0) return;
+  e.preventDefault();
+  e.stopPropagation();
+  if (clickTimeout) {
+    clearTimeout(clickTimeout);
+    clickTimeout = null;
   }
+  stopInspection("end");
+}
+
+// --- Main Functions ---
+function startInspection() {
+  if (inspectionState.isActive) return;
+  inspectionState.isActive = true;
+
+  document.body.style.cursor = "crosshair";
+  createTooltip();
 
   document.addEventListener("mousemove", onMouseMove, true);
   document.addEventListener("keydown", onKeyDown, true);
@@ -162,7 +128,41 @@ function startTooltipInspect(mode) {
   document.addEventListener("dblclick", onDblClick, true);
 }
 
+function stopInspection(reason = "end") {
+  if (!inspectionState.isActive) return;
+  inspectionState.isActive = false;
+
+  document.body.style.cursor = "default";
+
+  document.removeEventListener("mousemove", onMouseMove, true);
+  document.removeEventListener("keydown", onKeyDown, true);
+  document.removeEventListener("click", onClick, true);
+  document.removeEventListener("dblclick", onDblClick, true);
+
+  if (inspectionState.tooltip) {
+    inspectionState.tooltip.remove();
+    inspectionState.tooltip = null;
+  }
+
+  try {
+    if (reason === "freeze" && lastSample) {
+      chrome.runtime.sendMessage({ action: "inspect-freeze", ...lastSample });
+    } else {
+      chrome.runtime.sendMessage({ action: "inspect-end" });
+    }
+  } catch (_) {}
+
+  // Ensure global state is updated
+  chrome.storage.local.set({ isDetecting: false });
+}
+
+// --- Message Listener ---
 chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.action === "pick-font") startTooltipInspect("font");
-  if (msg.action === "pick-bg") startTooltipInspect("bg");
+  if (msg.action === "toggle-css-detect") {
+    if (msg.isDetecting) {
+      startInspection();
+    } else {
+      stopInspection();
+    }
+  }
 });
