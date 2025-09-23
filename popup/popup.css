@@ -1,0 +1,75 @@
+/* Container principal */
+.popup-container {
+  width: 320px;
+  padding: 15px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #1e1e1e;
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Títulos */
+.popup-container h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.popup-container h3 {
+  font-size: 14px;
+  margin-top: 15px;
+  margin-bottom: 6px;
+  color: #9cdcfe;
+}
+
+/* Seções */
+.section {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Botões */
+button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-start;
+  background-color: #007acc;
+  color: #fff;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s;
+  position: relative;
+}
+
+/* Hover / Active */
+button:hover {
+  background-color: #005f99;
+}
+
+button:active {
+  background-color: #004466;
+}
+
+/* Tooltip via title já funciona nativamente, mas podemos reforçar visual com pseudo-elementos */
+button[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 4px 6px;
+  font-size: 11px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1000;
+}

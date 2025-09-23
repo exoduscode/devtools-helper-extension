@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DevTools Helper</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+    <div class="popup-container">
+        <h2>DevTools Helper</h2>
+
+        <div class="section">
+            <h3>Storage</h3>
+            <button id="btn-clear-local" title="Apaga todos os itens do LocalStorage do site atual">🗑️
+                LocalStorage</button>
+            <button id="btn-clear-session" title="Apaga todos os itens do SessionStorage do site atual">🗑️
+                SessionStorage</button>
+            <button id="btn-clear-cookies" title="Apaga todos os cookies do site atual">🍪 Cookies</button>
+        </div>
+
+        <div class="section">
+            <h3>Inspeção Visual</h3>
+            <button id="btn-pick-font" title="Detecta tamanho e cor do texto sob o mouse">🔤 Detectar Fonte</button>
+            <button id="btn-pick-bg" title="Detecta a cor de fundo sob o mouse">🎨 Detectar Background</button>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
