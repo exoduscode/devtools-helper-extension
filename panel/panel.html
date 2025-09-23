@@ -6,6 +6,7 @@
     <title data-i18n="extName"></title>
     <script src="../utils/translator.js"></script>
     <script src="../utils/theme.js"></script>
+    <script src="../utils/color.js"></script>
     <style>
         :root {
             --bg-color: #f5f5f5;
@@ -148,6 +149,52 @@
             gap: 8px;
             font-family: monospace;
         }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-swatch {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .color-details {
+            display: flex;
+            flex-direction: column;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .color-value {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+        }
+
+        .color-value:hover, .copyable:hover {
+            background-color: var(--button-hover-bg);
+            cursor: pointer;
+        }
+
+        .copyable {
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+        }
     </style>
 </head>
 
@@ -197,30 +244,38 @@
             <div id="inspect-live" class="inspect-live">
                 <div class="row">
                     <div class="label" data-i18n="labelFont"></div>
-                    <div id="live-font-size">—</div>
-                    <div id="live-font-rem" style="color: #888;">—</div>
+                    <div id="live-font-size" class="copyable" data-i18n-title="copyTooltip">—</div>
+                    <div id="live-font-rem" class="copyable" data-i18n-title="copyTooltip" style="color: #888;">—</div>
                 </div>
                 <div class="row">
                     <div class="label" data-i18n="labelWeight"></div>
-                    <div id="live-font-weight">—</div>
+                    <div id="live-font-weight" class="copyable" data-i18n-title="copyTooltip">—</div>
                 </div>
                 <div class="row">
                     <div class="label" data-i18n="labelText"></div>
                     <div id="live-text-swatch" class="swatch"></div>
                     <div class="values">
-                        <span id="live-text-rgba">—</span>
-                        <span id="live-text-hex">—</span>
+                        <span id="live-text-rgba" class="copyable" data-i18n-title="copyTooltip">—</span>
+                        <span id="live-text-hex" class="copyable" data-i18n-title="copyTooltip">—</span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="label" data-i18n="labelBackground"></div>
                     <div id="live-bg-swatch" class="swatch"></div>
                     <div class="values">
-                        <span id="live-bg-rgba">—</span>
-                        <span id="live-bg-hex">—</span>
+                        <span id="live-bg-rgba" class="copyable" data-i18n-title="copyTooltip">—</span>
+                        <span id="live-bg-hex" class="copyable" data-i18n-title="copyTooltip">—</span>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="section">
+            <h3 data-i18n="colorsOnPageTitle"></h3>
+            <button id="btn-find-colors">
+                <span data-i18n="findColorsButton"></span>
+            </button>
+            <div id="color-results" class="color-grid"></div>
         </div>
 
         <div class="status" id="status"></div>

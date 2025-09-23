@@ -91,6 +91,62 @@ document.addEventListener("DOMContentLoaded", async () => {
     setTimeout(() => window.close(), 100);
   });
 
+  // --- Color Finder --- 
+  const findColorsBtn = document.getElementById('btn-find-colors');
+  const colorResultsDiv = document.getElementById('color-results');
+
+  findColorsBtn.addEventListener('click', async () => {
+    const tabId = await getActiveTabId();
+    if (tabId) {
+        findColorsBtn.disabled = true;
+        findColorsBtn.textContent = 'Finding...';
+        chrome.tabs.sendMessage(tabId, { action: 'find-colors' });
+    }
+  });
+
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (msg.action === 'color-results') {
+        findColorsBtn.disabled = false;
+        findColorsBtn.innerHTML = `<span data-i18n="findColorsButton"></span>`;
+        translator.apply(); // Re-apply to translate the button text
+
+        colorResultsDiv.innerHTML = ''; // Clear previous results
+        msg.colors.forEach(colorString => {
+            const color = new Color(colorString);
+            const rgb = color.toRgb();
+            const hex = color.toHex();
+
+            const item = document.createElement('div');
+            item.className = 'color-item';
+
+            const swatch = document.createElement('div');
+            swatch.className = 'color-swatch';
+            swatch.style.backgroundColor = rgb;
+
+            const details = document.createElement('div');
+            details.className = 'color-details';
+
+            const rgbValue = document.createElement('div');
+            rgbValue.className = 'color-value';
+            rgbValue.textContent = rgb;
+            rgbValue.title = 'Copy RGB';
+            rgbValue.addEventListener('click', () => navigator.clipboard.writeText(rgb));
+
+            const hexValue = document.createElement('div');
+            hexValue.className = 'color-value';
+            hexValue.textContent = hex;
+            hexValue.title = 'Copy HEX';
+            hexValue.addEventListener('click', () => navigator.clipboard.writeText(hex));
+
+            details.appendChild(rgbValue);
+            details.appendChild(hexValue);
+            item.appendChild(swatch);
+            item.appendChild(details);
+            colorResultsDiv.appendChild(item);
+        });
+    }
+  });
+
   // Initialize the popup
   await setInitialState();
 });

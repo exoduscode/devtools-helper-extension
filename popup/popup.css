@@ -121,8 +121,47 @@ button:active {
   background: var(--button-hover-bg);
 }
 
+.color-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Each color item will take the full width */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.color-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0; /* Prevent swatch from shrinking */
+}
+
+.color-details {
+    display: flex;
+    flex-direction: column;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+.color-value {
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.color-value:hover {
+    background-color: var(--button-hover-bg);
+}
+
 /* Tooltip via title já funciona nativamente, mas podemos reforçar visual com pseudo-elementos */
-button[title]:hover::after {
+button[title]:hover::after, .color-value[title]:hover::after {
   content: attr(title);
   position: absolute;
   top: -28px;

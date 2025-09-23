@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="popup.css">
     <script src="../utils/translator.js"></script>
     <script src="../utils/theme.js"></script>
+    <script src="../utils/color.js"></script>
 </head>
 
 <body>
@@ -52,6 +53,14 @@
             <button id="btn-pick-font" data-i18n-title="detectCSSTooltip">
                 <span data-i18n="detectCSSTitle"></span>
             </button>
+        </div>
+
+        <div class="section">
+            <h3 data-i18n="colorsOnPageTitle"></h3>
+            <button id="btn-find-colors">
+                <span data-i18n="findColorsButton"></span>
+            </button>
+            <div id="color-results" class="color-grid"></div>
         </div>
     </div>
 

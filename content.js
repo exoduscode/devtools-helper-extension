@@ -196,4 +196,22 @@ chrome.runtime.onMessage.addListener((msg) => {
       stopInspection();
     }
   }
+
+  if (msg.action === "find-colors") {
+    const colors = new Set();
+    const elements = document.getElementsByTagName('*');
+    const colorProperties = ['color', 'backgroundColor', 'borderColor', 'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor', 'outlineColor'];
+
+    for (let i = 0; i < elements.length; i++) {
+        const style = window.getComputedStyle(elements[i]);
+        colorProperties.forEach(prop => {
+            const color = style.getPropertyValue(prop);
+            if (color && color !== 'transparent' && color !== 'rgba(0, 0, 0, 0)') {
+                colors.add(color);
+            }
+        });
+    }
+
+    chrome.runtime.sendMessage({ action: 'color-results', colors: Array.from(colors) });
+  }
 });

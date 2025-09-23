@@ -97,5 +97,20 @@
   },
   "themeDark": {
     "message": "深色"
+  },
+  "colorsOnPageTitle": {
+    "message": "页面中的颜色"
+  },
+  "findColorsButton": {
+    "message": "查找颜色"
+  },
+  "statusColorCopied": {
+    "message": "颜色已复制！"
+  },
+  "copyTooltip": {
+    "message": "复制"
+  },
+  "statusValueCopied": {
+    "message": "数值已复制！"
   }
 }

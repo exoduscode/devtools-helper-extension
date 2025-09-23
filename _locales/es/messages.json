@@ -97,5 +97,20 @@
   },
   "themeDark": {
     "message": "Oscuro"
+  },
+  "colorsOnPageTitle": {
+    "message": "Colores en Esta Página"
+  },
+  "findColorsButton": {
+    "message": "Encontrar Colores"
+  },
+  "statusColorCopied": {
+    "message": "¡Color copiado!"
+  },
+  "copyTooltip": {
+    "message": "Copiar"
+  },
+  "statusValueCopied": {
+    "message": "¡Valor copiado!"
   }
 }

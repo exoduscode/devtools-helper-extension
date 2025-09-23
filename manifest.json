@@ -12,7 +12,8 @@
     "scripting",
     "tabs",
     "browsingData",
-    "notifications"
+    "notifications",
+    "clipboardWrite"
   ],
   "action": {
     "default_popup": "popup/popup.html",
