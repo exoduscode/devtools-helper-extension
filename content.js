@@ -60,6 +60,12 @@ function createTooltip() {
 function startTooltipInspect(mode) {
   const { tooltip, colorBlockText, colorBlockBg, infoText } = createTooltip();
 
+  // Throttle live updates to the panel to avoid spamming messages
+  const minInterval = 100; // ms
+  let lastSent = 0;
+  let lastSample = null;
+  let clickTimeout = null;
+
   function onMouseMove(e) {
     const el = document.elementFromPoint(e.clientX, e.clientY);
     if (!el) return;
@@ -82,28 +88,78 @@ function startTooltipInspect(mode) {
         `RGB/RGBA: ${bgColor}\nHEX: ${rgbToHex(bgColor)}`;
     }
 
+    // Track last sample
+    lastSample = {
+      fontSize: style.fontSize,
+      textColor,
+      textHex: rgbToHex(textColor),
+      bgColor,
+      bgHex: rgbToHex(bgColor),
+    };
+
+    // Send live update to the panel (throttled)
+    const now = Date.now();
+    if (now - lastSent >= minInterval) {
+      lastSent = now;
+      try {
+        chrome.runtime.sendMessage({ action: "inspect-update", ...lastSample });
+      } catch (_) {
+        // ignore if panel not available
+      }
+    }
+
     tooltip.style.top = e.clientY + 20 + "px";
     tooltip.style.left = e.clientX + 20 + "px";
   }
 
-  function stopInspect() {
-    document.removeEventListener("mousemove", onMouseMove);
-    document.removeEventListener("keydown", onKeyDown);
-    document.removeEventListener("click", onClick);
+  function stopInspect(reason = "end") {
+    document.removeEventListener("mousemove", onMouseMove, true);
+    document.removeEventListener("keydown", onKeyDown, true);
+    document.removeEventListener("click", onClick, true);
+    document.removeEventListener("dblclick", onDblClick, true);
     tooltip.remove();
+
+    try {
+      if (reason === "freeze" && lastSample) {
+        chrome.runtime.sendMessage({ action: "inspect-freeze", ...lastSample });
+      } else {
+        chrome.runtime.sendMessage({ action: "inspect-end" });
+      }
+    } catch (_) {
+      // ignore
+    }
   }
 
   function onKeyDown(e) {
     if (e.key === "Escape") stopInspect();
   }
 
-  function onClick() {
-    stopInspect();
+  function onClick(e) {
+    if (e.button !== 0) return; // only left button
+    e.preventDefault();
+    e.stopPropagation();
+    // Defer to see if a double click occurs
+    if (clickTimeout) clearTimeout(clickTimeout);
+    clickTimeout = setTimeout(() => {
+      stopInspect("freeze");
+    }, 250);
   }
 
-  document.addEventListener("mousemove", onMouseMove);
-  document.addEventListener("keydown", onKeyDown);
-  document.addEventListener("click", onClick);
+  function onDblClick(e) {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      clickTimeout = null;
+    }
+    stopInspect("end");
+  }
+
+  document.addEventListener("mousemove", onMouseMove, true);
+  document.addEventListener("keydown", onKeyDown, true);
+  document.addEventListener("click", onClick, true);
+  document.addEventListener("dblclick", onDblClick, true);
 }
 
 chrome.runtime.onMessage.addListener((msg) => {

@@ -49,6 +49,36 @@
             font-size: 12px;
             color: #666;
         }
+
+        /* Live inspection UI */
+        .inspect-live {
+            margin-top: 10px;
+        }
+
+        .inspect-live .row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0;
+        }
+
+        .inspect-live .label {
+            width: 90px;
+            color: #555;
+        }
+
+        .inspect-live .swatch {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+        }
+
+        .inspect-live .values {
+            display: flex;
+            gap: 8px;
+            font-family: monospace;
+        }
     </style>
 </head>
 
@@ -69,6 +99,28 @@
             <h3>Inspeção Visual</h3>
             <button id="btn-pick-font" title="Detecta tamanho e cor do texto sob o mouse">🔤 Detectar Fonte</button>
             <button id="btn-pick-bg" title="Detecta a cor de fundo sob o mouse">🎨 Detectar Background</button>
+            <div id="inspect-live" class="inspect-live">
+                <div class="row">
+                    <div class="label">Fonte:</div>
+                    <div id="live-font-size">—</div>
+                </div>
+                <div class="row">
+                    <div class="label">Texto:</div>
+                    <div id="live-text-swatch" class="swatch"></div>
+                    <div class="values">
+                        <span id="live-text-rgba">—</span>
+                        <span id="live-text-hex">—</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="label">Background:</div>
+                    <div id="live-bg-swatch" class="swatch"></div>
+                    <div class="values">
+                        <span id="live-bg-rgba">—</span>
+                        <span id="live-bg-hex">—</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="status" id="status"></div>
