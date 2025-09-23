@@ -1,0 +1,89 @@
+{
+  "extName": {
+    "message": "Ayudante de DevTools"
+  },
+  "storageTitle": {
+    "message": "Almacenamiento"
+  },
+  "clearLocalStorage": {
+    "message": "LocalStorage"
+  },
+  "clearLocalStorageTitle": {
+    "message": "Borrar todos los elementos de LocalStorage del sitio actual"
+  },
+  "clearSessionStorage": {
+    "message": "SessionStorage"
+  },
+  "clearSessionStorageTitle": {
+    "message": "Borrar todos los elementos de SessionStorage del sitio actual"
+  },
+  "clearCookies": {
+    "message": "Cookies"
+  },
+  "clearCookiesTitle": {
+    "message": "Borrar todas las cookies del sitio actual"
+  },
+  "visualInspectionTitle": {
+    "message": "Inspección Visual"
+  },
+  "detectCSSTitle": {
+    "message": "Detectar CSS en Tiempo Real"
+  },
+  "detectCSSTooltip": {
+    "message": "Detecta el CSS en tiempo real del elemento bajo el ratón"
+  },
+  "labelOn": {
+    "message": "(ON)"
+  },
+  "labelOff": {
+    "message": "(OFF)"
+  },
+  "labelFont": {
+    "message": "Fuente:"
+  },
+  "labelWeight": {
+    "message": "Peso:"
+  },
+  "labelText": {
+    "message": "Texto:"
+  },
+  "labelBackground": {
+    "message": "Fondo:"
+  },
+  "statusCSSEnabled": {
+    "message": "Detección de CSS activada."
+  },
+  "statusCSSDisabled": {
+    "message": "Detección de CSS desactivada."
+  },
+  "selectLanguage": {
+    "message": "Idioma:"
+  },
+  "statusSessionCleared": {
+    "message": "¡SessionStorage limpiado con éxito!"
+  },
+  "statusSessionError": {
+    "message": "Error al limpiar SessionStorage"
+  },
+  "statusLocalCleared": {
+    "message": "¡LocalStorage limpiado con éxito!"
+  },
+  "statusLocalError": {
+    "message": "Error al limpiar LocalStorage"
+  },
+  "statusCookiesCleared": {
+    "message": "¡Cookies limpiadas con éxito!"
+  },
+  "statusCookiesError": {
+    "message": "Error al limpiar las cookies"
+  },
+  "statusValuesFrozen": {
+    "message": "Valores congelados"
+  },
+  "statusInspectionFinished": {
+    "message": "Inspección finalizada"
+  },
+  "clear": {
+    "message": "Limpiar"
+  }
+}

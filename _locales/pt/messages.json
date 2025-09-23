@@ -1,0 +1,89 @@
+{
+  "extName": {
+    "message": "DevTools Helper"
+  },
+  "storageTitle": {
+    "message": "Storage"
+  },
+  "clearLocalStorage": {
+    "message": "LocalStorage"
+  },
+  "clearLocalStorageTitle": {
+    "message": "Apaga todos os itens do LocalStorage do site atual"
+  },
+  "clearSessionStorage": {
+    "message": "SessionStorage"
+  },
+  "clearSessionStorageTitle": {
+    "message": "Apaga todos os itens do SessionStorage do site atual"
+  },
+  "clearCookies": {
+    "message": "Cookies"
+  },
+  "clearCookiesTitle": {
+    "message": "Apaga todos os cookies do site atual"
+  },
+  "visualInspectionTitle": {
+    "message": "Inspeção Visual"
+  },
+  "detectCSSTitle": {
+    "message": "Detectar CSS em Tempo Real"
+  },
+  "detectCSSTooltip": {
+    "message": "Detecta o CSS em tempo real do elemento sob o mouse"
+  },
+  "labelOn": {
+    "message": "(ON)"
+  },
+  "labelOff": {
+    "message": "(OFF)"
+  },
+  "labelFont": {
+    "message": "Fonte:"
+  },
+  "labelWeight": {
+    "message": "Peso:"
+  },
+  "labelText": {
+    "message": "Texto:"
+  },
+  "labelBackground": {
+    "message": "Background:"
+  },
+  "statusCSSEnabled": {
+    "message": "Detecção de CSS ativada."
+  },
+  "statusCSSDisabled": {
+    "message": "Detecção de CSS desativada."
+  },
+  "selectLanguage": {
+    "message": "Idioma:"
+  },
+  "statusSessionCleared": {
+    "message": "SessionStorage limpo com sucesso!"
+  },
+  "statusSessionError": {
+    "message": "Erro ao limpar SessionStorage"
+  },
+  "statusLocalCleared": {
+    "message": "LocalStorage limpo com sucesso!"
+  },
+  "statusLocalError": {
+    "message": "Erro ao limpar LocalStorage"
+  },
+  "statusCookiesCleared": {
+    "message": "Cookies limpos com sucesso!"
+  },
+  "statusCookiesError": {
+    "message": "Erro ao limpar cookies"
+  },
+  "statusValuesFrozen": {
+    "message": "Valores fixados"
+  },
+  "statusInspectionFinished": {
+    "message": "Inspeção finalizada"
+  },
+  "clear": {
+    "message": "Limpar"
+  }
+}

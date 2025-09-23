@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "EC DevTools Helper",
+  "name": "__MSG_extName__",
   "description": "Extensão para Frontend e UI/UX Developers: limpeza de storage e inspeção visual.",
   "version": "1.0.0",
+  "default_locale": "en",
   "icons": {
     "128": "assets/icon128.png"
   },

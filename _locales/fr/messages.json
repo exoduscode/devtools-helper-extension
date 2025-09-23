@@ -1,0 +1,89 @@
+{
+  "extName": {
+    "message": "Assistant DevTools"
+  },
+  "storageTitle": {
+    "message": "Stockage"
+  },
+  "clearLocalStorage": {
+    "message": "LocalStorage"
+  },
+  "clearLocalStorageTitle": {
+    "message": "Effacer tous les éléments du LocalStorage du site actuel"
+  },
+  "clearSessionStorage": {
+    "message": "SessionStorage"
+  },
+  "clearSessionStorageTitle": {
+    "message": "Effacer tous les éléments du SessionStorage du site actuel"
+  },
+  "clearCookies": {
+    "message": "Cookies"
+  },
+  "clearCookiesTitle": {
+    "message": "Effacer tous les cookies du site actuel"
+  },
+  "visualInspectionTitle": {
+    "message": "Inspection Visuelle"
+  },
+  "detectCSSTitle": {
+    "message": "Détecter le CSS en Temps Réel"
+  },
+  "detectCSSTooltip": {
+    "message": "Détecte le CSS en temps réel de l'élément sous la souris"
+  },
+  "labelOn": {
+    "message": "(ON)"
+  },
+  "labelOff": {
+    "message": "(OFF)"
+  },
+  "labelFont": {
+    "message": "Police:"
+  },
+  "labelWeight": {
+    "message": "Poids:"
+  },
+  "labelText": {
+    "message": "Texte:"
+  },
+  "labelBackground": {
+    "message": "Arrière-plan:"
+  },
+  "statusCSSEnabled": {
+    "message": "Détection CSS activée."
+  },
+  "statusCSSDisabled": {
+    "message": "Détection CSS désactivée."
+  },
+  "selectLanguage": {
+    "message": "Langue:"
+  },
+  "statusSessionCleared": {
+    "message": "SessionStorage effacé avec succès !"
+  },
+  "statusSessionError": {
+    "message": "Erreur lors de l'effacement du SessionStorage"
+  },
+  "statusLocalCleared": {
+    "message": "LocalStorage effacé avec succès !"
+  },
+  "statusLocalError": {
+    "message": "Erreur lors de l'effacement du LocalStorage"
+  },
+  "statusCookiesCleared": {
+    "message": "Cookies effacés avec succès !"
+  },
+  "statusCookiesError": {
+    "message": "Erreur lors de l'effacement des cookies"
+  },
+  "statusValuesFrozen": {
+    "message": "Valeurs figées"
+  },
+  "statusInspectionFinished": {
+    "message": "Inspection terminée"
+  },
+  "clear": {
+    "message": "Effacer"
+  }
+}

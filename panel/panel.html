@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>DevTools Helper Panel</title>
+    <title data-i18n="extName"></title>
+    <script src="../utils/translator.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -93,33 +94,49 @@
 
 <body>
     <div class="panel-container">
-        <h2>DevTools Helper</h2>
+        <div class="section language-selector">
+            <label for="lang-select" data-i18n="selectLanguage"></label>
+            <select id="lang-select">
+                <option value="zh">Chinese</option>
+                <option value="en">English</option>
+                <option value="fr">French</option>
+                <option value="pt">Portuguese</option>
+                <option value="es">Spanish</option>
+            </select>
+        </div>
+
+        <h2 data-i18n="extName"></h2>
 
         <div class="section">
-            <h3>Storage</h3>
-            <button id="btn-clear-local" title="Apaga todos os itens do LocalStorage do site atual">🗑️
-                LocalStorage</button>
-            <button id="btn-clear-session" title="Apaga todos os itens do SessionStorage do site atual">🗑️
-                SessionStorage</button>
-            <button id="btn-clear-cookies" title="Apaga todos os cookies do site atual">🍪 Cookies</button>
+            <h3 data-i18n="storageTitle"></h3>
+            <button id="btn-clear-local" data-i18n-title="clearLocalStorageTitle">
+                <span data-i18n="clear"></span> <span data-i18n="clearLocalStorage"></span>
+            </button>
+            <button id="btn-clear-session" data-i18n-title="clearSessionStorageTitle">
+                <span data-i18n="clear"></span> <span data-i18n="clearSessionStorage"></span>
+            </button>
+            <button id="btn-clear-cookies" data-i18n-title="clearCookiesTitle">
+                <span data-i18n="clear"></span> <span data-i18n="clearCookies"></span>
+            </button>
         </div>
 
         <div class="section">
-            <h3>Inspeção Visual</h3>
-            <button id="btn-pick-font" title="Detecta o CSS em tempo real do elemento sob o mouse">🔤 Detectar CSS em
-                Tempo Real</button>
+            <h3 data-i18n="visualInspectionTitle"></h3>
+            <button id="btn-pick-font" data-i18n-title="detectCSSTooltip">
+                 <span data-i18n="detectCSSTitle"></span>
+            </button>
             <div id="inspect-live" class="inspect-live">
                 <div class="row">
-                    <div class="label">Fonte:</div>
+                    <div class="label" data-i18n="labelFont"></div>
                     <div id="live-font-size">—</div>
                     <div id="live-font-rem" style="color: #888;">—</div>
                 </div>
                 <div class="row">
-                    <div class="label">Peso:</div>
+                    <div class="label" data-i18n="labelWeight"></div>
                     <div id="live-font-weight">—</div>
                 </div>
                 <div class="row">
-                    <div class="label">Texto:</div>
+                    <div class="label" data-i18n="labelText"></div>
                     <div id="live-text-swatch" class="swatch"></div>
                     <div class="values">
                         <span id="live-text-rgba">—</span>
@@ -127,7 +144,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="label">Background:</div>
+                    <div class="label" data-i18n="labelBackground"></div>
                     <div id="live-bg-swatch" class="swatch"></div>
                     <div class="values">
                         <span id="live-bg-rgba">—</span>

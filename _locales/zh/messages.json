@@ -1,0 +1,89 @@
+{
+  "extName": {
+    "message": "开发者工具助手"
+  },
+  "storageTitle": {
+    "message": "存储"
+  },
+  "clearLocalStorage": {
+    "message": "本地存储"
+  },
+  "clearLocalStorageTitle": {
+    "message": "清除当前站点的所有本地存储项目"
+  },
+  "clearSessionStorage": {
+    "message": "会话存储"
+  },
+  "clearSessionStorageTitle": {
+    "message": "清除当前站点的所有会话存储项目"
+  },
+  "clearCookies": {
+    "message": "Cookies"
+  },
+  "clearCookiesTitle": {
+    "message": "清除当前站点的所有Cookie"
+  },
+  "visualInspectionTitle": {
+    "message": "视觉检查"
+  },
+  "detectCSSTitle": {
+    "message": "实时检测CSS"
+  },
+  "detectCSSTooltip": {
+    "message": "实时检测鼠标下方元素的CSS"
+  },
+  "labelOn": {
+    "message": "(开)"
+  },
+  "labelOff": {
+    "message": "(关)"
+  },
+  "labelFont": {
+    "message": "字体:"
+  },
+  "labelWeight": {
+    "message": "字重:"
+  },
+  "labelText": {
+    "message": "文本:"
+  },
+  "labelBackground": {
+    "message": "背景:"
+  },
+  "statusCSSEnabled": {
+    "message": "CSS检测已启用。"
+  },
+  "statusCSSDisabled": {
+    "message": "CSS检测已禁用。"
+  },
+  "selectLanguage": {
+    "message": "语言:"
+  },
+  "statusSessionCleared": {
+    "message": "会话存储已成功清除！"
+  },
+  "statusSessionError": {
+    "message": "清除会话存储时出错"
+  },
+  "statusLocalCleared": {
+    "message": "本地存储已成功清除！"
+  },
+  "statusLocalError": {
+    "message": "清除本地存储时出错"
+  },
+  "statusCookiesCleared": {
+    "message": "Cookie已成功清除！"
+  },
+  "statusCookiesError": {
+    "message": "清除Cookie时出错"
+  },
+  "statusValuesFrozen": {
+    "message": "数值已冻结"
+  },
+  "statusInspectionFinished": {
+    "message": "检查已完成"
+  },
+  "clear": {
+    "message": "清除"
+  }
+}

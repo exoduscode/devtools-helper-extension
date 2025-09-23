@@ -1,0 +1,89 @@
+{
+  "extName": {
+    "message": "DevTools Helper"
+  },
+  "storageTitle": {
+    "message": "Storage"
+  },
+  "clearLocalStorage": {
+    "message": "LocalStorage"
+  },
+  "clearLocalStorageTitle": {
+    "message": "Clear all LocalStorage items for the current site"
+  },
+  "clearSessionStorage": {
+    "message": "SessionStorage"
+  },
+  "clearSessionStorageTitle": {
+    "message": "Clear all SessionStorage items for the current site"
+  },
+  "clearCookies": {
+    "message": "Cookies"
+  },
+  "clearCookiesTitle": {
+    "message": "Clear all cookies for the current site"
+  },
+  "visualInspectionTitle": {
+    "message": "Visual Inspection"
+  },
+  "detectCSSTitle": {
+    "message": "Detect CSS in Real-Time"
+  },
+  "detectCSSTooltip": {
+    "message": "Detects the real-time CSS of the element under the mouse"
+  },
+  "labelOn": {
+    "message": "(ON)"
+  },
+  "labelOff": {
+    "message": "(OFF)"
+  },
+  "labelFont": {
+    "message": "Font:"
+  },
+  "labelWeight": {
+    "message": "Weight:"
+  },
+  "labelText": {
+    "message": "Text:"
+  },
+  "labelBackground": {
+    "message": "Background:"
+  },
+  "statusCSSEnabled": {
+    "message": "CSS detection enabled."
+  },
+  "statusCSSDisabled": {
+    "message": "CSS detection disabled."
+  },
+  "selectLanguage": {
+    "message": "Language:"
+  },
+  "statusSessionCleared": {
+    "message": "SessionStorage cleared successfully!"
+  },
+  "statusSessionError": {
+    "message": "Error clearing SessionStorage"
+  },
+  "statusLocalCleared": {
+    "message": "LocalStorage cleared successfully!"
+  },
+  "statusLocalError": {
+    "message": "Error clearing LocalStorage"
+  },
+  "statusCookiesCleared": {
+    "message": "Cookies cleared successfully!"
+  },
+  "statusCookiesError": {
+    "message": "Error clearing cookies"
+  },
+  "statusValuesFrozen": {
+    "message": "Values frozen"
+  },
+  "statusInspectionFinished": {
+    "message": "Inspection finished"
+  },
+  "clear": {
+    "message": "Clear"
+  }
+}
