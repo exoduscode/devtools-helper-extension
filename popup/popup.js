@@ -11,42 +11,17 @@ async function getActiveTabId() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const pickFontBtn = document.getElementById("btn-pick-font");
   const langSelect = document.getElementById("lang-select");
   const themeSelect = document.getElementById("theme-select");
 
-  const updateButtonText = () => {
-    const baseText = translator.getMessage("detectCSSTitle");
-    const onLabel = translator.getMessage("labelOn");
-    const offLabel = translator.getMessage("labelOff");
-    const isDetecting = pickFontBtn.classList.contains("active");
-
-    const icon = "🔤"; // Keep the icon consistent
-    if (isDetecting) {
-      pickFontBtn.innerHTML = `${icon} ${baseText} <span style="color: #a5d6a7;">${onLabel}</span>`;
-    } else {
-      pickFontBtn.innerHTML = `${icon} ${baseText} <span style="color: #ef9a9a;">${offLabel}</span>`;
-    }
-  };
-
   const setInitialState = async () => {
-    const {
-      userLang = "en",
-      isDetecting,
-      userTheme = "system",
-    } = await chrome.storage.local.get([
-      "userLang",
-      "isDetecting",
-      "userTheme",
-    ]);
+    const { userLang = "en", userTheme = "system" } =
+      await chrome.storage.local.get(["userLang", "userTheme"]);
     langSelect.value = userLang;
     themeSelect.value = userTheme;
 
     await translator.load(userLang);
     translator.apply();
-
-    if (isDetecting) pickFontBtn.classList.add("active");
-    updateButtonText();
   };
 
   // Handle Language Change
@@ -55,7 +30,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     await chrome.storage.local.set({ userLang: selectedLang });
     await translator.load(selectedLang);
     translator.apply();
-    updateButtonText();
   });
 
   themeSelect.addEventListener("change", async () => {
@@ -94,23 +68,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.close();
   });
 
-  pickFontBtn.addEventListener("click", async () => {
-    const tabId = await getActiveTabId();
-    const { isDetecting } = await chrome.storage.local.get("isDetecting");
-    const newIsDetecting = !isDetecting;
-
-    await chrome.storage.local.set({ isDetecting: newIsDetecting });
-    if (tabId) {
-      chrome.tabs.sendMessage(tabId, {
-        action: "toggle-css-detect",
-        isDetecting: newIsDetecting,
-      });
-    }
-    pickFontBtn.classList.toggle("active");
-    updateButtonText();
-    setTimeout(() => window.close(), 100);
-  });
-
   // --- Toast / Status ---
   const showStatus = (messageKey) => {
     const toast = document.getElementById("status-toast");
@@ -140,66 +97,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     document.body.removeChild(ta);
   };
-
-  // --- Color Finder ---
-  const findColorsBtn = document.getElementById("btn-find-colors");
-  const colorResultsDiv = document.getElementById("color-results");
-
-  findColorsBtn.addEventListener("click", async () => {
-    const tabId = await getActiveTabId();
-    if (tabId) {
-      findColorsBtn.disabled = true;
-      findColorsBtn.textContent = "Finding...";
-      chrome.tabs.sendMessage(tabId, { action: "find-colors" });
-    }
-  });
-
-  chrome.runtime.onMessage.addListener((msg) => {
-    if (msg.action === "color-results") {
-      findColorsBtn.disabled = false;
-      findColorsBtn.innerHTML = `<span data-i18n="findColorsButton"></span>`;
-      translator.apply(); // Re-apply to translate the button text
-
-      colorResultsDiv.innerHTML = ""; // Clear previous results
-      msg.colors.forEach((colorString) => {
-        const color = new Color(colorString);
-        const rgb = color.toRgb();
-        const hex = color.toHex();
-
-        const item = document.createElement("div");
-        item.className = "color-item";
-
-        const swatch = document.createElement("div");
-        swatch.className = "color-swatch";
-        swatch.style.backgroundColor = rgb;
-
-        const details = document.createElement("div");
-        details.className = "color-details";
-
-        const rgbValue = document.createElement("div");
-        rgbValue.className = "color-value";
-        rgbValue.textContent = rgb;
-        rgbValue.title = translator.getMessage("copyTooltip");
-        rgbValue.addEventListener("click", () =>
-          copyToClipboard(rgb, "statusColorCopied")
-        );
-
-        const hexValue = document.createElement("div");
-        hexValue.className = "color-value";
-        hexValue.textContent = hex;
-        hexValue.title = translator.getMessage("copyTooltip");
-        hexValue.addEventListener("click", () =>
-          copyToClipboard(hex, "statusColorCopied")
-        );
-
-        details.appendChild(rgbValue);
-        details.appendChild(hexValue);
-        item.appendChild(swatch);
-        item.appendChild(details);
-        colorResultsDiv.appendChild(item);
-      });
-    }
-  });
 
   // Initialize the popup
   await setInitialState();

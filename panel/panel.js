@@ -21,8 +21,8 @@ if (!isPanel) {
       const baseText = translator.getMessage("detectCSSTitle");
       const onLabel = translator.getMessage("labelOn");
       const offLabel = translator.getMessage("labelOff");
-      const isDetecting = pickFontBtn.classList.contains('active');
-      const icon = '🔤';
+      const isDetecting = pickFontBtn.classList.contains("active");
+      const icon = "🔤";
 
       if (isDetecting) {
         pickFontBtn.innerHTML = `${icon} ${baseText} <span style="color: #a5d6a7;">${onLabel}</span>`;
@@ -32,24 +32,34 @@ if (!isPanel) {
     };
 
     const showStatus = (messageKey, type = "success", isKey = true) => {
-        const toast = document.getElementById('status-toast');
-        if (!toast) return;
+      const toast = document.getElementById("status-toast");
+      if (!toast) return;
 
-        toast.textContent = isKey ? translator.getMessage(messageKey) : messageKey;
-        toast.className = 'toast show'; // Reset classes
-        toast.classList.add(type); // Add success or error class
+      toast.textContent = isKey
+        ? translator.getMessage(messageKey)
+        : messageKey;
+      toast.className = "toast show"; // Reset classes
+      toast.classList.add(type); // Add success or error class
 
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3000);
     };
 
     // --- Initialization ---
     const setInitialState = async () => {
-      const { userLang = 'en', isDetecting, userTheme = 'system' } = await chrome.storage.local.get(["userLang", "isDetecting", "userTheme"]);
+      const {
+        userLang = "en",
+        isDetecting,
+        userTheme = "system",
+      } = await chrome.storage.local.get([
+        "userLang",
+        "isDetecting",
+        "userTheme",
+      ]);
       langSelect.value = userLang;
       themeSelect.value = userTheme;
-      
+
       await translator.load(userLang);
       translator.apply();
 
@@ -69,13 +79,13 @@ if (!isPanel) {
     });
 
     themeSelect.addEventListener("change", async () => {
-        const selectedTheme = themeSelect.value;
-        await themeManager.setTheme(selectedTheme);
+      const selectedTheme = themeSelect.value;
+      await themeManager.setTheme(selectedTheme);
     });
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
-      if (namespace === 'local' && changes.isDetecting) {
-        pickFontBtn.classList.toggle('active', changes.isDetecting.newValue);
+      if (namespace === "local" && changes.isDetecting) {
+        pickFontBtn.classList.toggle("active", changes.isDetecting.newValue);
         updateButtonText();
       }
     });
@@ -91,48 +101,69 @@ if (!isPanel) {
     });
 
     // ... other button listeners ...
-    document.getElementById("btn-clear-session").addEventListener("click", () => {
-        chrome.devtools.inspectedWindow.eval("sessionStorage.clear()", (result, isException) => {
-            showStatus(isException ? "statusSessionError" : "statusSessionCleared", isException ? 'error' : 'success');
-        });
-    });
+    document
+      .getElementById("btn-clear-session")
+      .addEventListener("click", () => {
+        chrome.devtools.inspectedWindow.eval(
+          "sessionStorage.clear()",
+          (result, isException) => {
+            showStatus(
+              isException ? "statusSessionError" : "statusSessionCleared",
+              isException ? "error" : "success"
+            );
+          }
+        );
+      });
 
     document.getElementById("btn-clear-local").addEventListener("click", () => {
-        chrome.devtools.inspectedWindow.eval("localStorage.clear()", (result, isException) => {
-            showStatus(isException ? "statusLocalError" : "statusLocalCleared", isException ? 'error' : 'success');
-        });
+      chrome.devtools.inspectedWindow.eval(
+        "localStorage.clear()",
+        (result, isException) => {
+          showStatus(
+            isException ? "statusLocalError" : "statusLocalCleared",
+            isException ? "error" : "success"
+          );
+        }
+      );
     });
 
-    document.getElementById("btn-clear-cookies").addEventListener("click", () => {
+    document
+      .getElementById("btn-clear-cookies")
+      .addEventListener("click", () => {
         chrome.runtime.sendMessage({ action: "clear-cookies" }, (response) => {
-            showStatus(response && response.success ? "statusCookiesCleared" : "statusCookiesError", response && response.success ? 'success' : 'error');
+          showStatus(
+            response && response.success
+              ? "statusCookiesCleared"
+              : "statusCookiesError",
+            response && response.success ? "success" : "error"
+          );
         });
-    });
+      });
 
     // --- Clipboard Helper using execCommand (as per MDN docs) ---
     const copyToClipboard = (text, statusMessageKey) => {
-        const ta = document.createElement('textarea');
-        ta.style.position = 'absolute';
-        ta.style.left = '-9999px';
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        try {
-            document.execCommand('copy');
-            showStatus(statusMessageKey, 'success');
-        } catch (err) {
-            console.error('Failed to copy text: ', err);
-        }
-        document.body.removeChild(ta);
+      const ta = document.createElement("textarea");
+      ta.style.position = "absolute";
+      ta.style.left = "-9999px";
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        showStatus(statusMessageKey, "success");
+      } catch (err) {
+        console.error("Failed to copy text: ", err);
+      }
+      document.body.removeChild(ta);
     };
 
     // --- Click to Copy for Live Inspection ---
-    document.querySelectorAll('.copyable').forEach(el => {
-        el.addEventListener('click', () => {
-            if (el.textContent && el.textContent !== '—') {
-                copyToClipboard(el.textContent, 'statusValueCopied');
-            }
-        });
+    document.querySelectorAll(".copyable").forEach((el) => {
+      el.addEventListener("click", () => {
+        if (el.textContent && el.textContent !== "—") {
+          copyToClipboard(el.textContent, "statusValueCopied");
+        }
+      });
     });
 
     // --- Live Inspection Listeners ---
@@ -147,96 +178,180 @@ if (!isPanel) {
     const elBgHEX = document.getElementById("live-bg-hex");
 
     function resetLive() {
-        if (!elFontSize) return; // UI not present
-        elFontSize.textContent = "—";
-        elFontRem.textContent = "—";
-        elFontWeight.textContent = "—";
-        elTextSw.style.background = "transparent";
-        elTextRGBA.textContent = "—";
-        elTextHEX.textContent = "—";
-        elBgSw.style.background = "transparent";
-        elBgRGBA.textContent = "—";
-        elBgHEX.textContent = "—";
+      if (!elFontSize) return; // UI not present
+      elFontSize.textContent = "—";
+      elFontRem.textContent = "—";
+      elFontWeight.textContent = "—";
+      elTextSw.style.background = "transparent";
+      elTextRGBA.textContent = "—";
+      elTextHEX.textContent = "—";
+      elBgSw.style.background = "transparent";
+      elBgRGBA.textContent = "—";
+      elBgHEX.textContent = "—";
     }
 
     function applyLive(data) {
-        if (!data) return;
-        if (elFontSize && data.fontSize) elFontSize.textContent = data.fontSize;
-        if (elFontRem && data.fontRem) elFontRem.textContent = `(${data.fontRem})`;
-        if (elFontWeight && data.fontWeight) elFontWeight.textContent = data.fontWeight;
-        if (elTextSw && data.textColor) elTextSw.style.background = data.textColor;
-        if (elTextRGBA && data.textColor) elTextRGBA.textContent = data.textColor;
-        if (elTextHEX && data.textHex) elTextHEX.textContent = data.textHex;
-        if (elBgSw && data.bgColor) elBgSw.style.background = data.bgColor;
-        if (elBgRGBA && data.bgColor) elBgRGBA.textContent = data.bgColor;
-        if (elBgHEX && data.bgHex) elBgHEX.textContent = data.bgHex;
+      if (!data) return;
+      if (elFontSize && data.fontSize) elFontSize.textContent = data.fontSize;
+      if (elFontRem && data.fontRem)
+        elFontRem.textContent = `(${data.fontRem})`;
+      if (elFontWeight && data.fontWeight)
+        elFontWeight.textContent = data.fontWeight;
+      if (elTextSw && data.textColor)
+        elTextSw.style.background = data.textColor;
+      if (elTextRGBA && data.textColor) elTextRGBA.textContent = data.textColor;
+      if (elTextHEX && data.textHex) elTextHEX.textContent = data.textHex;
+      if (elBgSw && data.bgColor) elBgSw.style.background = data.bgColor;
+      if (elBgRGBA && data.bgColor) elBgRGBA.textContent = data.bgColor;
+      if (elBgHEX && data.bgHex) elBgHEX.textContent = data.bgHex;
     }
 
-    const findColorsBtn = document.getElementById('btn-find-colors');
-    const colorResultsDiv = document.getElementById('color-results');
+    const findColorsBtn = document.getElementById("btn-find-colors");
+    const colorResultsDiv = document.getElementById("color-results");
+    const colorCountDiv = document.getElementById("color-count");
+    const colorCountText = document.getElementById("color-count-text");
 
-    findColorsBtn.addEventListener('click', () => {
-        findColorsBtn.disabled = true;
-        findColorsBtn.textContent = 'Finding...';
-        chrome.tabs.sendMessage(chrome.devtools.inspectedWindow.tabId, { action: 'find-colors' });
+    findColorsBtn.addEventListener("click", () => {
+      findColorsBtn.disabled = true;
+      findColorsBtn.textContent = "Finding...";
+      chrome.tabs.sendMessage(chrome.devtools.inspectedWindow.tabId, {
+        action: "find-colors",
+      });
     });
 
     chrome.runtime.onMessage.addListener((msg) => {
-        if (!msg || !msg.action) return;
+      if (!msg || !msg.action) return;
 
-        switch (msg.action) {
-            case "inspect-update":
-                applyLive(msg);
-                break;
-            case "inspect-freeze":
-                applyLive(msg);
-                showStatus("statusValuesFrozen", 'success');
-                break;
-            case "inspect-end":
-                resetLive();
-                showStatus("statusInspectionFinished", 'success');
-                break;
-            case 'color-results':
-                findColorsBtn.disabled = false;
-                findColorsBtn.innerHTML = `<span data-i18n="findColorsButton"></span>`;
-                translator.apply(); // Re-apply to translate the button text
+      switch (msg.action) {
+        case "inspect-update":
+          applyLive(msg);
+          break;
+        case "inspect-freeze":
+          applyLive(msg);
+          showStatus("statusValuesFrozen", "success");
+          break;
+        case "inspect-end":
+          resetLive();
+          showStatus("statusInspectionFinished", "success");
+          break;
+        case "color-results":
+          findColorsBtn.disabled = false;
+          findColorsBtn.innerHTML = `<span data-i18n="findColorsButton"></span>`;
+          translator.apply(); // Re-apply to translate the button text
 
-                colorResultsDiv.innerHTML = ''; // Clear previous results
-                msg.colors.forEach(colorString => {
-                    const color = new Color(colorString);
-                    const rgb = color.toRgb();
-                    const hex = color.toHex();
+          colorResultsDiv.innerHTML = ""; // Clear previous results
 
-                    const item = document.createElement('div');
-                    item.className = 'color-item';
+          // Update color count display
+          const totalColors = msg.colors.length;
+          const rgbaCount = msg.colors.filter((color) =>
+            color.includes("rgba")
+          ).length;
+          const rgbCount = totalColors - rgbaCount;
 
-                    const swatch = document.createElement('div');
-                    swatch.className = 'color-swatch';
-                    swatch.style.backgroundColor = rgb;
+          if (totalColors === 0) {
+            colorCountDiv.style.display = "none";
+            const noColorsMsg = document.createElement("div");
+            noColorsMsg.textContent = "No colors found on this page.";
+            noColorsMsg.style.color = "#888";
+            noColorsMsg.style.fontStyle = "italic";
+            noColorsMsg.style.textAlign = "center";
+            noColorsMsg.style.padding = "20px";
+            colorResultsDiv.appendChild(noColorsMsg);
+            return;
+          } else {
+            colorCountDiv.style.display = "block";
+            let countText = `Found ${totalColors} color${
+              totalColors !== 1 ? "s" : ""
+            }`;
+            if (rgbaCount > 0 && rgbCount > 0) {
+              countText += ` (${rgbaCount} RGBA, ${rgbCount} RGB)`;
+            } else if (rgbaCount > 0) {
+              countText += ` (${rgbaCount} RGBA)`;
+            } else {
+              countText += ` (${rgbCount} RGB)`;
+            }
+            colorCountText.textContent = countText;
+          }
 
-                    const details = document.createElement('div');
-                    details.className = 'color-details';
+          // Sort colors: RGBA colors first, then RGB
+          const sortedColors = msg.colors.sort((a, b) => {
+            const colorA = new Color(a);
+            const colorB = new Color(b);
+            if (colorA.hasTransparency() && !colorB.hasTransparency())
+              return -1;
+            if (!colorA.hasTransparency() && colorB.hasTransparency()) return 1;
+            return 0;
+          });
 
-                    const rgbValue = document.createElement('div');
-                    rgbValue.className = 'color-value';
-                    rgbValue.textContent = rgb;
-                    rgbValue.title = translator.getMessage('copyTooltip');
-                    rgbValue.addEventListener('click', () => copyToClipboard(rgb, 'statusColorCopied'));
+          sortedColors.forEach((colorString) => {
+            const color = new Color(colorString);
+            const rgb = color.toRgb();
+            const hex = color.toHex();
+            const colorType = color.getColorType();
 
-                    const hexValue = document.createElement('div');
-                    hexValue.className = 'color-value';
-                    hexValue.textContent = hex;
-                    hexValue.title = translator.getMessage('copyTooltip');
-                    hexValue.addEventListener('click', () => copyToClipboard(hex, 'statusColorCopied'));
+            const item = document.createElement("div");
+            item.className = "color-item";
 
-                    details.appendChild(rgbValue);
-                    details.appendChild(hexValue);
-                    item.appendChild(swatch);
-                    item.appendChild(details);
-                    colorResultsDiv.appendChild(item);
-                });
-                break;
-        }
+            const swatch = document.createElement("div");
+            swatch.className = "color-swatch";
+            swatch.style.backgroundColor = rgb;
+
+            // Add checkerboard pattern for transparent colors
+            if (color.hasTransparency()) {
+              swatch.style.backgroundImage = `
+                            linear-gradient(45deg, #ccc 25%, transparent 25%), 
+                            linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+                            linear-gradient(45deg, transparent 75%, #ccc 75%), 
+                            linear-gradient(-45deg, transparent 75%, #ccc 75%)
+                        `;
+              swatch.style.backgroundSize = "8px 8px";
+              swatch.style.backgroundPosition =
+                "0 0, 0 4px, 4px -4px, -4px 0px";
+              // Layer the actual color on top
+              const colorOverlay = document.createElement("div");
+              colorOverlay.style.width = "100%";
+              colorOverlay.style.height = "100%";
+              colorOverlay.style.backgroundColor = rgb;
+              colorOverlay.style.borderRadius = "4px";
+              swatch.appendChild(colorOverlay);
+            }
+
+            const details = document.createElement("div");
+            details.className = "color-details";
+
+            // Add color type indicator
+            const typeIndicator = document.createElement("div");
+            typeIndicator.className = "color-type";
+            typeIndicator.textContent = colorType;
+            typeIndicator.style.fontSize = "0.7em";
+            typeIndicator.style.color = "#888";
+            typeIndicator.style.marginBottom = "2px";
+            details.appendChild(typeIndicator);
+
+            const rgbValue = document.createElement("div");
+            rgbValue.className = "color-value";
+            rgbValue.textContent = rgb;
+            rgbValue.title = translator.getMessage("copyTooltip");
+            rgbValue.addEventListener("click", () =>
+              copyToClipboard(rgb, "statusColorCopied")
+            );
+
+            const hexValue = document.createElement("div");
+            hexValue.className = "color-value";
+            hexValue.textContent = hex;
+            hexValue.title = translator.getMessage("copyTooltip");
+            hexValue.addEventListener("click", () =>
+              copyToClipboard(hex, "statusColorCopied")
+            );
+
+            details.appendChild(rgbValue);
+            details.appendChild(hexValue);
+            item.appendChild(swatch);
+            item.appendChild(details);
+            colorResultsDiv.appendChild(item);
+          });
+          break;
+      }
     });
   });
 }

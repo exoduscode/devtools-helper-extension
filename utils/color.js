@@ -41,8 +41,28 @@ class Color {
       const hex = c.toString(16);
       return hex.length === 1 ? "0" + hex : hex;
     };
-    return `#${toHexComponent(this.rgba.r)}${toHexComponent(
-      this.rgba.g
-    )}${toHexComponent(this.rgba.b)}`;
+    
+    if (this.rgba.a === 1) {
+      // Opaque color - standard hex
+      return `#${toHexComponent(this.rgba.r)}${toHexComponent(
+        this.rgba.g
+      )}${toHexComponent(this.rgba.b)}`;
+    } else {
+      // Transparent color - hex with alpha
+      const alphaHex = Math.round(this.rgba.a * 255);
+      return `#${toHexComponent(this.rgba.r)}${toHexComponent(
+        this.rgba.g
+      )}${toHexComponent(this.rgba.b)}${toHexComponent(alphaHex)}`;
+    }
+  }
+  
+  // Get a description of the color type
+  getColorType() {
+    return this.rgba.a === 1 ? 'RGB' : 'RGBA';
+  }
+  
+  // Check if color has transparency
+  hasTransparency() {
+    return this.rgba.a < 1;
   }
 }

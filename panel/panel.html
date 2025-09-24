@@ -86,7 +86,8 @@
             background-color: var(--button-active-bg);
         }
 
-        button:hover, select:hover {
+        button:hover,
+        select:hover {
             background: var(--button-hover-bg);
         }
 
@@ -101,7 +102,8 @@
         select {
             -webkit-appearance: none;
             appearance: none;
-            padding-right: 30px; /* Make space for arrow */
+            padding-right: 30px;
+            /* Make space for arrow */
             background-image: var(--select-arrow);
             background-repeat: no-repeat;
             background-position: right 8px center;
@@ -185,7 +187,8 @@
             transition: background-color 0.2s;
         }
 
-        .color-value:hover, .copyable:hover {
+        .color-value:hover,
+        .copyable:hover {
             background-color: var(--button-hover-bg);
             cursor: pointer;
         }
@@ -199,7 +202,8 @@
         /* Toast Notification */
         .toast {
             position: fixed;
-            bottom: -50px; /* Start off-screen */
+            bottom: -50px;
+            /* Start off-screen */
             left: 50%;
             transform: translateX(-50%);
             padding: 10px 20px;
@@ -217,11 +221,13 @@
         }
 
         .toast.success {
-            background-color: #2e7d32; /* Dark green */
+            background-color: #2e7d32;
+            /* Dark green */
         }
 
         .toast.error {
-            background-color: #d32f2f; /* Dark red */
+            background-color: #d32f2f;
+            /* Dark red */
         }
     </style>
 </head>
@@ -267,7 +273,7 @@
         <div class="section">
             <h3 data-i18n="visualInspectionTitle"></h3>
             <button id="btn-pick-font" data-i18n-title="detectCSSTooltip">
-                 <span data-i18n="detectCSSTitle"></span>
+                <span data-i18n="detectCSSTitle"></span>
             </button>
             <div id="inspect-live" class="inspect-live">
                 <div class="row">
@@ -303,6 +309,9 @@
             <button id="btn-find-colors">
                 <span data-i18n="findColorsButton"></span>
             </button>
+            <div id="color-count" style="margin: 10px 0; font-size: 0.9em; color: #666; display: none;">
+                <span id="color-count-text"></span>
+            </div>
             <div id="color-results" class="color-grid"></div>
         </div>
 

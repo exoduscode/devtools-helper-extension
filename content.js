@@ -198,20 +198,185 @@ chrome.runtime.onMessage.addListener((msg) => {
   }
 
   if (msg.action === "find-colors") {
+    console.log('🎨 Starting color detection...');
+    
+    // First, let's check if our test page elements exist
+    console.log('🔍 Checking if test elements exist:');
+    const expectedClasses = ['rgba-text', 'rgba-background', 'rgba-border', 'rgba-shadow', 'text-shadow', 'multiple-rgba', 'solid-colors'];
+    expectedClasses.forEach(className => {
+      const element = document.querySelector('.' + className);
+      console.log(`  .${className}: ${element ? '✅ Found' : '❌ Not found'}`);
+    });
+    
     const colors = new Set();
     const elements = document.getElementsByTagName('*');
-    const colorProperties = ['color', 'backgroundColor', 'borderColor', 'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor', 'outlineColor'];
+    const colorProperties = [
+      'color', 
+      'background-color', 
+      'border-color', 
+      'border-top-color', 
+      'border-right-color', 
+      'border-bottom-color', 
+      'border-left-color', 
+      'outline-color',
+      'box-shadow',
+      'text-shadow',
+      'border-block-start-color',
+      'border-block-end-color',
+      'border-inline-start-color',
+      'border-inline-end-color'
+    ];
 
-    for (let i = 0; i < elements.length; i++) {
-        const style = window.getComputedStyle(elements[i]);
-        colorProperties.forEach(prop => {
-            const color = style.getPropertyValue(prop);
-            if (color && color !== 'transparent' && color !== 'rgba(0, 0, 0, 0)') {
-                colors.add(color);
-            }
-        });
+    console.log(`📊 Scanning ${elements.length} elements for colors...`);
+    
+    // Debug: Check specific elements we expect to have RGBA colors
+    const testClasses = ['rgba-text', 'rgba-background', 'rgba-border', 'rgba-shadow', 'text-shadow', 'multiple-rgba'];
+    testClasses.forEach(className => {
+      const element = document.querySelector('.' + className);
+      if (element) {
+        const style = window.getComputedStyle(element);
+        console.log(`🎯 Checking .${className}:`);
+        console.log(`  - color: "${style.color}"`);
+        console.log(`  - backgroundColor: "${style.backgroundColor}"`);
+        console.log(`  - borderColor: "${style.borderColor}"`);
+        console.log(`  - borderLeftColor: "${style.borderLeftColor}"`);
+        console.log(`  - borderRightColor: "${style.borderRightColor}"`);
+        console.log(`  - boxShadow: "${style.boxShadow}"`);
+        console.log(`  - textShadow: "${style.textShadow}"`);
+      } else {
+        console.log(`❌ Element with class .${className} not found`);
+      }
+    });
+    
+    // Also check body element specifically
+    const bodyStyle = window.getComputedStyle(document.body);
+    console.log(`🎯 Body element:`);
+    console.log(`  - backgroundColor: "${bodyStyle.backgroundColor}"`);
+
+    // Helper function to extract colors from complex values like box-shadow
+    function extractColorsFromValue(value) {
+      const foundColors = [];
+      // Match rgb(), rgba(), hsl(), hsla(), and hex colors
+      const colorRegex = /(rgba?\s*\([^)]+\)|hsla?\s*\([^)]+\)|#[0-9a-fA-F]{3,8})/gi;
+      let match;
+      while ((match = colorRegex.exec(value)) !== null) {
+        foundColors.push(match[1].trim());
+      }
+      return foundColors;
     }
 
-    chrome.runtime.sendMessage({ action: 'color-results', colors: Array.from(colors) });
+    let elementCount = 0;
+    let colorCount = 0;
+
+    for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        const style = window.getComputedStyle(element);
+        let elementHasColors = false;
+        
+        // Debug: log which properties we're checking for this element
+        if (i < 5) { // Only log for first few elements to avoid spam
+            console.log(`🔧 Checking element ${i} for properties:`, colorProperties);
+        }
+        
+        colorProperties.forEach(prop => {
+            const value = style.getPropertyValue(prop);
+            
+            // Debug: log ALL property values for specific elements, even filtered ones
+            if (element.className && (element.className.includes('rgba-background') || element.className.includes('rgba-border') || element.className.includes('rgba-shadow'))) {
+                console.log(`🔧 ${element.className} - ${prop}: "${value}" (filtered: ${!value || value === 'transparent' || value === 'rgba(0, 0, 0, 0)' || value === 'none' || value === 'initial' || value === 'inherit'})`);
+            }
+            
+            if (value && value !== 'transparent' && value !== 'rgba(0, 0, 0, 0)' && value !== 'none' && value !== 'initial' && value !== 'inherit') {
+                
+                // Log ALL color values for debugging (not just rgb/rgba)
+                console.log(`🔍 Element ${i} (${element.tagName}${element.className ? '.' + element.className : ''}): ${prop} = "${value}"`);
+                elementHasColors = true;
+                
+                if (prop === 'box-shadow' || prop === 'text-shadow') {
+                    // Extract colors from shadow values
+                    const shadowColors = extractColorsFromValue(value);
+                    if (shadowColors.length > 0) {
+                        console.log(`  🌟 Found ${shadowColors.length} shadow colors:`, shadowColors);
+                        shadowColors.forEach(color => {
+                            if (color && color.trim()) {
+                                colors.add(color.trim());
+                                colorCount++;
+                            }
+                        });
+                    }
+                } else {
+                    // Regular color property - also check if it contains multiple colors
+                    const extractedColors = extractColorsFromValue(value);
+                    if (extractedColors.length > 0) {
+                        console.log(`  ✨ Extracted ${extractedColors.length} colors from ${prop}:`, extractedColors);
+                        extractedColors.forEach(color => {
+                            colors.add(color.trim());
+                            colorCount++;
+                        });
+                    } else {
+                        // Add the raw value as a color
+                        colors.add(value.trim());
+                        colorCount++;
+                    }
+                }
+            }
+        });
+        
+        if (elementHasColors) {
+            elementCount++;
+        }
+    }
+    
+    console.log(`📈 Found colors in ${elementCount} elements, total color instances: ${colorCount}`);
+
+    // Filter out invalid colors and ensure we have valid RGB/RGBA values
+    const validColors = Array.from(colors).filter(color => {
+      // Skip obviously invalid values
+      if (!color || color.length < 3) return false;
+      
+      // Test if the color is valid by trying to parse it
+      try {
+        const testEl = document.createElement('div');
+        testEl.style.backgroundColor = color; // Use backgroundColor for better compatibility
+        document.body.appendChild(testEl);
+        const computed = window.getComputedStyle(testEl).backgroundColor;
+        document.body.removeChild(testEl);
+        
+        // Debug the validation process
+        console.log(`🧪 Testing color "${color}" -> computed: "${computed}"`);
+        
+        // Check if the computed color is valid and not transparent
+        const isValid = computed && 
+                       computed !== 'rgba(0, 0, 0, 0)' && 
+                       computed !== 'transparent' &&
+                       computed !== 'initial' &&
+                       computed !== 'inherit';
+        
+        if (!isValid) {
+          console.log(`❌ Color "${color}" failed validation (computed: "${computed}")`);
+        } else {
+          console.log(`✅ Color "${color}" passed validation`);
+        }
+        
+        return isValid;
+      } catch (e) {
+        console.log(`💥 Error testing color "${color}":`, e);
+        return false;
+      }
+    });
+
+    // Debug logging to see what colors were found
+    console.log('🎯 Total unique colors found:', colors.size);
+    console.log('🎯 All colors before filtering:', Array.from(colors));
+    console.log('✅ Valid colors after filtering:', validColors.length);
+    console.log('✅ Final valid colors:', validColors);
+    
+    // Check specifically for RGBA colors
+    const rgbaColors = validColors.filter(color => color.includes('rgba'));
+    const rgbColors = validColors.filter(color => color.includes('rgb') && !color.includes('rgba'));
+    console.log(`🔴 RGBA colors found: ${rgbaColors.length}`, rgbaColors);
+    console.log(`🔵 RGB colors found: ${rgbColors.length}`, rgbColors);
+    
+    chrome.runtime.sendMessage({ action: 'color-results', colors: validColors });
   }
 });
