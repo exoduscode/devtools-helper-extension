@@ -112,5 +112,8 @@
   },
   "statusValueCopied": {
     "message": "Valor copiado!"
+  },
+  "findingColors": {
+    "message": "Procurando..."
   }
 }

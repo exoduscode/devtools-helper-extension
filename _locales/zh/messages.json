@@ -112,5 +112,8 @@
   },
   "statusValueCopied": {
     "message": "数值已复制！"
+  },
+  "findingColors": {
+    "message": "查找中..."
   }
 }

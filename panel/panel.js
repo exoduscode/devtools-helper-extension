@@ -213,7 +213,7 @@ if (!isPanel) {
 
     findColorsBtn.addEventListener("click", () => {
       findColorsBtn.disabled = true;
-      findColorsBtn.textContent = "Finding...";
+      findColorsBtn.textContent = translator.getMessage("findingColors");
       chrome.tabs.sendMessage(chrome.devtools.inspectedWindow.tabId, {
         action: "find-colors",
       });
@@ -298,12 +298,7 @@ if (!isPanel) {
 
             // Add checkerboard pattern for transparent colors
             if (color.hasTransparency()) {
-              swatch.style.backgroundImage = `
-                            linear-gradient(45deg, #ccc 25%, transparent 25%), 
-                            linear-gradient(-45deg, #ccc 25%, transparent 25%), 
-                            linear-gradient(45deg, transparent 75%, #ccc 75%), 
-                            linear-gradient(-45deg, transparent 75%, #ccc 75%)
-                        `;
+              swatch.style.backgroundImage = "linear-gradient(0, #fff, #fff)";
               swatch.style.backgroundSize = "8px 8px";
               swatch.style.backgroundPosition =
                 "0 0, 0 4px, 4px -4px, -4px 0px";
