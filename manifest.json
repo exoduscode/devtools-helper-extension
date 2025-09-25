@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "description": "Extensão para Frontend e UI/UX Developers: limpeza de storage e inspeção visual.",
+  "description": "The best friend for Frontend and UI/UX Developers: clear storage, detect CSS in real-time, and find colors on the page.",
   "version": "1.0.0",
   "default_locale": "en",
   "icons": {

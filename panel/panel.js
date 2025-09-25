@@ -4,7 +4,7 @@ const isPanel = new URLSearchParams(location.search).get("isPanel") === "1";
 if (!isPanel) {
   // We are in the devtools_page context. Create the visible panel and exit.
   chrome.devtools.panels.create(
-    "DevTools Helper", // This name is not dynamic, it's the panel title
+    "EC DevTools Helper", // This name is not dynamic, it's the panel title
     "assets/icon128.png",
     "panel/panel.html?isPanel=1",
     () => {}
